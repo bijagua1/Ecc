@@ -1,0 +1,16 @@
+{
+  "name": "ecc-command-center",
+  "version": "2.2.1",
+  "description": "Production local web command center for ECC and Termux projects",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "bun --watch src/command-center/server.ts",
+    "start": "node --experimental-strip-types src/command-center/server.ts",
+    "test": "bun test src/command-center/tests",
+    "test:coverage": "bun test --coverage src/command-center/tests"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

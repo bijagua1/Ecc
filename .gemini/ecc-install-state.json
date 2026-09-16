@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "ecc.install.v1",
+  "installedAt": "2026-09-15T07:59:44.999Z",
+  "target": {
+    "id": "gemini-project",
+    "target": "gemini",
+    "kind": "project",
+    "root": "/data/data/com.termux/files/home/ECC/.gemini",
+    "installStatePath": "/data/data/com.termux/files/home/ECC/.gemini/ecc-install-state.json"
+  },
+  "request": {
+    "profile": "minimal",
+    "modules": [],
+    "includeComponents": [],
+    "excludeComponents": [],
+    "legacyLanguages": [],
+    "legacyMode": false,
+    "hookConsent": null
+  },
+  "resolution": {
+    "selectedModules": [
+      "platform-configs"
+    ],
+    "skippedModules": [
+      "rules-core",
+      "agents-core",
+      "commands-core",
+      "workflow-quality"
+    ]
+  },
+  "source": {
+    "repoVersion": "2.2.1",
+    "repoCommit": "d77fbf7b9d776859324947e708833955c6e6918b",
+    "manifestVersion": 1
+  },
+  "operations": [
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/.pi/README.md",
+      "sourceRelativePath": ".pi/README.md",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/.pi/README.md",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "0196e47160da4cf4e697e13d0c405ff91c877aa18620075a6be931835a6f7d75"
+    },
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/.pi/extensions/hook-runtime.js",
+      "sourceRelativePath": ".pi/extensions/hook-runtime.js",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/.pi/extensions/hook-runtime.js",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "8c16cfac1c852f8e8fc729829cc5f8fa241e78e1c4a8f80f4bffc32c229991fb"
+    },
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/.pi/extensions/index.ts",
+      "sourceRelativePath": ".pi/extensions/index.ts",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/.pi/extensions/index.ts",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "bd52278c10e42ddca122772b62082d4d8fa9db2132b4e4eb27cf1cbc88ea3b02"
+    },
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/mcp-configs/mcp-servers.json",
+      "sourceRelativePath": "mcp-configs/mcp-servers.json",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/mcp-configs/mcp-servers.json",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "1424c0de0ee3efd13ebbb8e9724c26e6b7dc604b7edeff6616b2c71cb4c6bd46"
+    },
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/scripts/auto-update.js",
+      "sourceRelativePath": "scripts/auto-update.js",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/scripts/auto-update.js",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "a46818249aee272bf4c489896601bda7b3e6dddf3e56422b8f47990d02675a1d"
+    },
+    {
+      "kind": "copy-file",
+      "moduleId": "platform-configs",
+      "sourcePath": "/data/data/com.termux/files/home/ECC/scripts/setup-package-manager.js",
+      "sourceRelativePath": "scripts/setup-package-manager.js",
+      "destinationPath": "/data/data/com.termux/files/home/ECC/.gemini/scripts/setup-package-manager.js",
+      "strategy": "preserve-relative-path",
+      "ownership": "managed",
+      "scaffoldOnly": false,
+      "contentSha256": "499f38ef03b3f7f9896ad97229b8213df215544bb3c6bd6343e3889f023f6bda"
+    }
+  ]
+}

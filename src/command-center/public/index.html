@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ECC Command Center</title>
+<style>
+:root{color-scheme:dark;--bg:#070b12;--panel:#0e1521;--panel2:#111b2a;--border:#1d2a3b;--text:#e7edf5;--muted:#8290a5;--green:#39d98a;--red:#ff6b6b;--yellow:#f4c95d}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;background:radial-gradient(circle at 80% 0%,#10213a 0,transparent 35%),var(--bg);color:var(--text)}
+header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#070b12ee;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#2878ff,#7c4dff);font-weight:900}
+h1{margin:0;font-size:19px;letter-spacing:.04em}
+.subtitle{color:var(--muted);font-size:12px;margin-top:3px}
+button{border:1px solid var(--border);background:var(--panel2);color:var(--text);padding:9px 14px;border-radius:8px;cursor:pointer}
+main{max-width:1250px;margin:auto;padding:26px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border);border-radius:14px;padding:18px}
+.stat{font-size:27px;font-weight:800}
+.label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:var(--yellow)}
+.dot.ok{background:var(--green);box-shadow:0 0 10px #39d98a88}
+.dot.bad{background:var(--red)}
+section{margin-top:20px}
+.section-head{margin-bottom:10px}
+h2{font-size:13px;letter-spacing:.1em;margin:0}
+.agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.agent{min-height:135px}
+.agent-name{font-size:19px;font-weight:750;margin-bottom:6px}
+.agent-role{color:var(--muted);font-size:12px;line-height:1.5}
+.badge{display:inline-flex;align-items:center;margin-top:18px;padding:5px 9px;border-radius:20px;background:#172236;color:#aebbd0;font-size:11px}
+.gateway-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
+.provider{border:1px solid var(--border);border-radius:9px;padding:11px;background:#0a111c}
+.provider-name{font-size:12px;font-weight:650}
+.provider-status{color:var(--muted);font-size:11px;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:12px}
+th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.empty{padding:25px;text-align:center;color:var(--muted)}
+.activity{min-height:130px;color:var(--muted);font:12px monospace;white-space:pre-wrap}
+@media(max-width:850px){.grid,.agent-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){main{padding:15px}.grid,.agent-grid{grid-template-columns:1fr}header{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">
+<div class="logo">E</div>
+<div>
+<h1>ECC COMMAND CENTER</h1>
+<div class="subtitle">Engineering Control Plane</div>
+</div>
+</div>
+<button id="refresh">Refresh</button>
+</header>
+
+<main>
+<div class="grid">
+<div class="card"><div class="label">Command Center</div><div class="stat"><span class="dot ok"></span>ONLINE</div></div>
+<div class="card"><div class="label">Agents</div><div class="stat" id="agent-count">4</div></div>
+<div class="card"><div class="label">Gateway</div><div class="stat" id="gateway-status">...</div></div>
+<div class="card"><div class="label">Last Update</div><div class="stat" id="updated" style="font-size:18px">...</div></div>
+</div>
+
+<section>
+<div class="section-head"><h2>AGENTS</h2></div>
+<div class="agent-grid" id="agents"></div>
+</section>
+
+<section>
+<div class="section-head"><h2>AI GATEWAY PROVIDERS</h2></div>
+<div class="card"><div class="gateway-list" id="providers"><div class="empty">Checking gateway...</div></div></div>
+</section>
+
+<section>
+<div class="section-head"><h2>AUTONOMOUS WORK</h2></div>
+<div class="card">
+<table>
+<thead><tr><th>Job</th><th>Status</th><th>Source</th><th>Created</th></tr></thead>
+<tbody id="jobs"></tbody>
+</table>
+</div>
+</section>
+
+<section>
+<div class="section-head"><h2>LIVE ACTIVITY</h2></div>
+<div class="card activity" id="activity">Waiting for ECC events...</div>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+
+function esc(v){
+ return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+}
+
+async function refresh(){
+ $('updated').textContent=new Date().toLocaleTimeString();
+
+ try{
+  const r=await fetch('/api/status',{cache:'no-store'});
+  const d=await r.json();
+  const good=d.gateway&&(d.gateway.status==='ok'||d.gateway.status==='healthy');
+
+  $('gateway-status').innerHTML='<span class="dot '+(good?'ok':'bad')+'"></span>'+(good?'ONLINE':'OFFLINE');
+  $('agent-count').textContent=d.agents?.length??0;
+
+  $('agents').innerHTML=(d.agents??[]).map(a=>`
+   <div class="card agent">
+    <div class="agent-name">${esc(a.name)}</div>
+    <div class="agent-role">${esc(a.role)}</div>
+    <div class="badge"><span class="dot"></span>${esc(a.health)}</div>
+   </div>`).join('');
+
+  const providers=d.gateway?.providers??[];
+  $('providers').innerHTML=providers.length?providers.map(p=>`
+   <div class="provider">
+    <div class="provider-name"><span class="dot ${p.healthy?'ok':'bad'}"></span>${esc(p.name)}</div>
+    <div class="provider-status">${p.healthy?'Healthy':'Unavailable'}</div>
+   </div>`).join(''):'<div class="empty">No provider health data.</div>';
+
+ }catch(e){
+  $('gateway-status').innerHTML='<span class="dot bad"></span>ERROR';
+  $('activity').textContent='Command Center API error: '+e.message;
+ }
+
+ try{
+  const r=await fetch('/api/jobs',{cache:'no-store'});
+  const d=await r.json();
+  $('jobs').innerHTML=d.jobs?.length?d.jobs.map(j=>`
+   <tr><td>${esc(j.id)}</td><td>${esc(j.status)}</td><td>${esc(j.source_type)}</td><td>${esc(j.created_at)}</td></tr>`).join('')
+   :'<tr><td colspan="4" class="empty">'+esc(d.message??'No active jobs')+'</td></tr>';
+ }catch{
+  $('jobs').innerHTML='<tr><td colspan="4" class="empty">Job service unavailable.</td></tr>';
+ }
+}
+
+$('refresh').onclick=refresh;
+refresh();
+setInterval(refresh,10000);
+</script>
+</body>
+</html>
